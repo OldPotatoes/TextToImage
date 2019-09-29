@@ -7,19 +7,31 @@ namespace TextToImage
     {
         readonly Color TextColor = Color.AntiqueWhite;
         readonly Color BackgroundColor = Color.Black;
-        const Int32 LineHeight = 25;
+        Single LineHeight = 0;
+        Int32 LinesDrawn = 0;
+        Font Font = new Font(FontFamily.GenericSansSerif, (Single)72.0, FontStyle.Regular);
 
-        public String CreateImageFile(String text, Int32 width, Int32 maxHeight, String path)
+        public String CreateImageFile(String text, String path, Int32 width=1920, Font font=null)
         {
-            Font font = new Font(FontFamily.GenericSansSerif, (Single)12.0, FontStyle.Regular);
+            Int32 maxHeight = 20000;
 
-            Image picture = DrawText(text, font, width, maxHeight);
+            if (font != null)
+                Font = font;
+
+            // First just to measure the length of image
+            DrawText(text, width, maxHeight);
+
+            Int32 height = (Int32)LineHeight * LinesDrawn + 1;
+            LinesDrawn = 0;
+            Image picture = DrawText(text, width, height);
+
+
             picture.Save(path);
 
             return path;
         }
 
-        private Image DrawText(String text, Font font, Int32 width, Int32 maxHeight)
+        private Image DrawText(String text, Int32 width, Int32 maxHeight)
         {
             Image image = new Bitmap(width, maxHeight);
             using (Graphics drawing = Graphics.FromImage(image))
@@ -30,7 +42,7 @@ namespace TextToImage
                 {
                     drawing.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-                    DrawLineOfText(text, font, width, textBrush, drawing);
+                    DrawLinesOfText(drawing, textBrush, text, width);
                     drawing.Save();
                 }
             }
@@ -38,21 +50,27 @@ namespace TextToImage
             return image;
         }
 
-        private void DrawLineOfText(String text, Font font, Int32 width, Brush textBrush, Graphics drawing)
+        private void DrawLinesOfText(Graphics drawing, Brush textBrush, String text, Int32 width)
         {
-            String textOfWidth = String.Empty;
             String remainderText = text;
 
-            Int32 linesDrawn = 0;
             while (remainderText.Length > 0)
             {
-                (textOfWidth, remainderText) = FindTextToFitWidth(remainderText, font, width);
-                drawing.DrawString(textOfWidth, font, textBrush, 0, LineHeight * linesDrawn);
-                linesDrawn++;
+                remainderText = DrawLineOfText(drawing, textBrush, remainderText, width);
+                LinesDrawn++;
             }
         }
 
-        private (String, String) FindTextToFitWidth(String text, Font font, Int32 width)
+        private String DrawLineOfText(Graphics drawing, Brush textBrush, String remainderText, Int32 width)
+        {
+            String textOfWidth;
+            (textOfWidth, remainderText) = FindTextToFitWidth(remainderText, width);
+            drawing.DrawString(textOfWidth, Font, textBrush, 0, LineHeight * LinesDrawn);
+
+            return remainderText;
+        }
+
+        private (String, String) FindTextToFitWidth(String text, Int32 width)
         {
             String textOfWidth = String.Empty;
             String remainderText = String.Empty;
@@ -60,12 +78,13 @@ namespace TextToImage
             Int32 wordEndingIndex = 0;
             Boolean foundEndOfLine = false;
 
+            SizeF textSize;
             while (!foundEndOfLine)
             {
                 wordEndingIndex = FindNextWordEnding(text, wordEndingIndex);
 
                 String line = text.Substring(0, wordEndingIndex);
-                SizeF textSize = MeasureText(line, font);
+                textSize = MeasureText(line);
 
                 if (textSize.Width <= width)
                     bestWidth = line.Length; // Added a word to the line to be drawn
@@ -77,6 +96,8 @@ namespace TextToImage
                 else
                     foundEndOfLine = true; // At the end of the text
             }
+
+            LineHeight = textSize.Height;
 
             if (bestWidth == 0)
             {
@@ -105,14 +126,14 @@ namespace TextToImage
             return count;
         }
 
-        private SizeF MeasureText(String text, Font font)
+        private SizeF MeasureText(String text)
         {
             SizeF textSize;
             using (Image dummyImage = new Bitmap(1, 1))
             {
                 using (Graphics drawing = Graphics.FromImage(dummyImage))
                 {
-                    textSize = drawing.MeasureString(text, font);
+                    textSize = drawing.MeasureString(text, Font);
                 }
             }
 
