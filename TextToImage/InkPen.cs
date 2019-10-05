@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace TextToImage
@@ -11,18 +10,10 @@ namespace TextToImage
 
         public void CreateImage(ImageDetails details)
         {
-            //Int32 pageHeight = (Int32)WriteToImage(details.Width, MAX_HEIGHT, details.BackgroundColor, details.TextColor, details.TextPieces, false);
-            //WriteToImage(details.Width, pageHeight, details.BackgroundColor, details.TextColor, details.TextPieces, true);
             Int32 pageHeight = (Int32)WriteToImage(MAX_HEIGHT, details, false);
             WriteToImage(pageHeight, details, true);
         }
 
-        //public Single WriteToImage(Int32 imageWidth,
-        //                           Int32 imageHeight,
-        //                           Color backgroundColour,
-        //                           Color textColour,
-        //                           List<ImageText> textPieces,
-        //                           Boolean save = false)
         public Single WriteToImage(Int32 imageHeight,
                                    ImageDetails details,
                                    Boolean save = false)
@@ -42,7 +33,12 @@ namespace TextToImage
                         if (piece.Font == null)
                             throw new Exception("Image text had a no font.");
 
-                        distanceDownThePage = DrawLinesOfText(drawing, textBrush, piece.Font, piece.Text, details.Width, distanceDownThePage);
+                        distanceDownThePage = DrawLinesOfText(drawing,
+                                                              textBrush,
+                                                              piece.Font,
+                                                              piece.Text,
+                                                              details.Width,
+                                                              distanceDownThePage);
                     }
                 }
 
@@ -63,11 +59,14 @@ namespace TextToImage
                                     Single width,
                                     Single distanceDownPage)
         {
-            //String remainderText = textoDraw;
-
             while (textoDraw.Length > 0)
             {
-                (textoDraw, distanceDownPage) = DrawLineOfText(drawing, textBrush, font, textoDraw, width, distanceDownPage);
+                (textoDraw, distanceDownPage) = DrawLineOfText(drawing,
+                                                               textBrush,
+                                                               font,
+                                                               textoDraw,
+                                                               width,
+                                                               distanceDownPage);
             }
 
             return distanceDownPage;

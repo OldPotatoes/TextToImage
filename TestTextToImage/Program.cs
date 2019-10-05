@@ -7,41 +7,32 @@ namespace ExampleTextToImage
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             String path = @"C:\temp\image.png";
-            //String text1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-            String textTitle = "Hoster Tully";
-            String textSubheading = "Chapters Survived: 24";
-            String textSubheading2 = "Some other sub-heading";
-            String textParagraph = "They laid Lord Hoster in a slender wooden boat, clad in shining silver armor, plate-and-mail. His cloak was spread beneath him, rippling blue and red. His surcoat was divided blue-and-red as well. A trout, scaled in silver and bronze, crowned the crest of the greathelm they placed beside his head. On his chest they placed a painted wooden sword, his fingers curled about its hilt. Mail gauntlets hid his wasted hands, and made him look almost strong again. His massive oak-and-iron shield was set by his left side, his hunting horn to his right. The rest of the boat was filled with driftwood and kindling and scraps of parchment, and stones to make it heavy in the water. His banner flew from the prow, the leaping trout of Riverrun.";
+            String textTitle1 = "MOBY-DICK;";
+            String textTitle2 = "or, THE WHALE.";
+            String textAuthor = "By Herman Melville";
+            String textChapter = "CHAPTER 1. Loomings.";
+            String text1 = "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.";
+            String text2 = "There now is your insular city of the Manhattoes, belted round by wharves as Indian isles by coral reefs—commerce surrounds it with her surf. Right and left, the streets take you waterward. Its extreme downtown is the battery, where that noble mole is washed by waves, and cooled by breezes, which a few hours previous were out of sight of land. Look at the crowds of water-gazers there.";
 
             Font fontTitle = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
-            Font fontSubheading = new Font(FontFamily.GenericSansSerif, (Single)86.0, FontStyle.Bold);
-            Font fontSubheading2 = new Font(FontFamily.GenericSerif, (Single)72.0, FontStyle.Bold);
-            Font fontParagraph = new Font(FontFamily.GenericSansSerif, (Single)72.0, FontStyle.Regular);
-
-            //var tti = new TextToImage.TextToImage();
-            //tti.CreateImage(new ImageDetails(path, 
-            //                                 Color.AntiqueWhite,
-            //                                 Color.Black,
-            //                                 new List<ImageText>() {
-            //                                     new ImageText(textTitle, fontTitle),
-            //                                     new ImageText(textSubheading, fontSubheading),
-            //                                     new ImageText(textSubheading2, fontSubheading2),
-            //                                     new ImageText(textParagraph, fontParagraph)
-            //                                 })
-            //);
+            Font fontAuthor = new Font(FontFamily.GenericSerif, (Single)72.0, FontStyle.Bold);
+            Font fontChapter = new Font(FontFamily.GenericSansSerif, (Single)60.0, FontStyle.Bold);
+            Font fontText = new Font(FontFamily.GenericSansSerif, (Single)24.0, FontStyle.Regular);
 
             var pen = new InkPen();
             pen.CreateImage(new ImageDetails(path,
                                              Color.AntiqueWhite,
                                              Color.Black,
                                              new List<ImageText>() {
-                                                 new ImageText(textTitle, fontTitle),
-                                                 new ImageText(textSubheading, fontSubheading),
-                                                 new ImageText(textSubheading2, fontSubheading2),
-                                                 new ImageText(textParagraph, fontParagraph)
+                                                 new ImageText(textTitle1, fontTitle),
+                                                 new ImageText(textTitle2, fontTitle),
+                                                 new ImageText(textAuthor, fontAuthor),
+                                                 new ImageText(textChapter, fontChapter),
+                                                 new ImageText(text1, fontText),
+                                                 new ImageText(text2, fontText)
                                              }));
         }
     }

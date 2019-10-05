@@ -1,47 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace TextToImage
 {
     public class TapeMeasure
     {
         private const Boolean DEBUG = true;
-
-        public SizeF MeasureText(String text, Font font)
-        {
-            SizeF textSize;
-            using (Image dummyImage = new Bitmap(1, 1))
-            {
-                using (Graphics drawing = Graphics.FromImage(dummyImage))
-                {
-                    textSize = drawing.MeasureString(text, font);
-                }
-            }
-
-            if (DEBUG)
-                Console.WriteLine($"TapeMeasure: Text '{text}' is {textSize} pixels long.");
-
-            return textSize;
-        }
-
-        public Int32 FindNextWordEnding(String text, Int32 currentWordEnding = 0)
-        {
-            Int32 count = currentWordEnding;
-            while (count < text.Length)
-            {
-                if (Char.IsWhiteSpace(text, count))
-                    break;
-
-                count++;
-            }
-
-            if (DEBUG)
-                Console.WriteLine($"TapeMeasure: In text '{text}' the next word ending after {currentWordEnding} is {count} characters in.");
-
-            return count;
-        }
 
         public (String, String, Single) FindTextToFitWidth(String text, Int32 pageWidth, Font font)
         {
@@ -83,6 +47,40 @@ namespace TextToImage
                 Console.WriteLine($"TapeMeasure: In text '{text}' on a page {pageWidth} wide, the line is {textInLine} (its height is {textSize.Height}).");
 
             return (textInLine, remainderText, textSize.Height);
+        }
+
+        public SizeF MeasureText(String text, Font font)
+        {
+            SizeF textSize;
+            using (Image dummyImage = new Bitmap(1, 1))
+            {
+                using (Graphics drawing = Graphics.FromImage(dummyImage))
+                {
+                    textSize = drawing.MeasureString(text, font);
+                }
+            }
+
+            if (DEBUG)
+                Console.WriteLine($"TapeMeasure: Text '{text}' is {textSize} pixels long.");
+
+            return textSize;
+        }
+
+        public Int32 FindNextWordEnding(String text, Int32 currentWordEnding = 0)
+        {
+            Int32 count = currentWordEnding;
+            while (count < text.Length)
+            {
+                if (Char.IsWhiteSpace(text, count))
+                    break;
+
+                count++;
+            }
+
+            if (DEBUG)
+                Console.WriteLine($"TapeMeasure: In text '{text}' the next word ending after {currentWordEnding} is {count} characters in.");
+
+            return count;
         }
     }
 }

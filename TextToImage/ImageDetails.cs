@@ -28,7 +28,11 @@ namespace TextToImage
         public readonly Color BackgroundColor;
         public readonly List<ImageText> TextPieces;
 
-        public ImageDetails(String path, Color textColor, Color backgroundColor, List<ImageText> textPieces, Int32 width = 1920)
+        public ImageDetails(String path,
+                            Color textColor,
+                            Color backgroundColor,
+                            List<ImageText> textPieces,
+                            Int32 width = 1920)
         {
             Path = path;
             Width = width;

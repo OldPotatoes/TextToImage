@@ -91,7 +91,6 @@ namespace TextToImage.Tests
         [Test]
         public void Test_WriteToImage_IsGood()
         {
-            Int32 pageWidth = 1000;
             Int32 pageHeight = 1000;
             String path = "";
             var textPieces = new List<ImageText>()
@@ -105,7 +104,6 @@ namespace TextToImage.Tests
             ImageDetails details = new ImageDetails(path, Color.White, Color.Black, textPieces);
 
             var pen = new InkPen();
-            //Single distanceDownThePage = pen.WriteToImage(pageWidth, pageHeight, Color.Black, Color.White, textPieces);
             Single distanceDownThePage = pen.WriteToImage(pageHeight, details);
 
             Assert.NotZero(distanceDownThePage, $"Moved no distance down the page.");
