@@ -16,7 +16,9 @@ namespace TextToImage.Tests
         public void Test_DrawLineOfText_IsGood()
         {
             String startingText = "In that egg there was a bird, A rare bird and a rattlin' bird";
-            String endingText = String.Empty;
+            var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
+            var textPiece = new ImageText(startingText, font);
+            var endingText = String.Empty;
             Single startingDistanceDownPage = 100.0f;
             Single endingDistanceDownPage = 0.0f;
             Single pageWidth = 500.0f;
@@ -28,9 +30,8 @@ namespace TextToImage.Tests
 
                 using (Brush textBrush = new SolidBrush(Color.White))
                 {
-                    var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
                     var pen = new InkPen();
-                    (endingText, endingDistanceDownPage) = pen.DrawLineOfText(drawing, textBrush, font, startingText, pageWidth, startingDistanceDownPage);
+                    (endingText, endingDistanceDownPage) = pen.DrawLineFragment(drawing, textBrush, textPiece, pageWidth, 0.0f, startingDistanceDownPage);
                 }
             }
 
@@ -46,6 +47,8 @@ namespace TextToImage.Tests
             Single startingDistanceDownPage = 100.0f;
             Single endingDistanceDownPage = 100.0f;
             Single pageWidth = 100.0f;
+            var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
+            var textPiece = new ImageText(startingText, font);
 
             Image image = new Bitmap(100, 100);
             using (Graphics drawing = Graphics.FromImage(image))
@@ -54,9 +57,8 @@ namespace TextToImage.Tests
 
                 using (Brush textBrush = new SolidBrush(Color.White))
                 {
-                    var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
                     var pen = new InkPen();
-                    (endingText, endingDistanceDownPage) = pen.DrawLineOfText(drawing, textBrush, font, startingText, pageWidth, startingDistanceDownPage);
+                    (endingText, endingDistanceDownPage) = pen.DrawLineFragment(drawing, textBrush, textPiece, pageWidth, 0.0f, startingDistanceDownPage);
                 }
             }
 
@@ -68,6 +70,9 @@ namespace TextToImage.Tests
         public void Test_DrawLinesOfText_IsGood()
         {
             String text = "In that egg there was a bird, A rare bird and a rattlin' bird";
+            var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
+            var textPiece = new ImageText(text, font);
+            var listTextPieces = new List<ImageText>() { textPiece };
             Single startingDistanceDownPage = 100.0f;
             Single endingDistanceDownPage = 0.0f;
             Single pageWidth = 500.0f;
@@ -79,9 +84,8 @@ namespace TextToImage.Tests
 
                 using (Brush textBrush = new SolidBrush(Color.White))
                 {
-                    var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
                     var pen = new InkPen();
-                    endingDistanceDownPage = pen.DrawLinesOfText(drawing, textBrush, font, text, pageWidth, startingDistanceDownPage);
+                    endingDistanceDownPage = pen.DrawLinesOfText(drawing, textBrush, listTextPieces, pageWidth, startingDistanceDownPage);
                 }
             }
 
@@ -93,12 +97,12 @@ namespace TextToImage.Tests
         {
             Int32 pageHeight = 1000;
             String path = "";
-            var textPieces = new List<ImageText>()
+            var textPieces = new List<List<ImageText>>()
             {
-                new ImageText("The first line of text", new Font(FontFamily.GenericSansSerif, (Single)72.0, FontStyle.Bold)),
-                new ImageText("The second line of text", new Font(FontFamily.GenericSansSerif, (Single)72.0, FontStyle.Regular)),
-                new ImageText("The third line of text", new Font(FontFamily.GenericSansSerif, (Single)60.0, FontStyle.Regular)),
-                new ImageText("The fourth line of text", new Font(FontFamily.GenericSansSerif, (Single)32.0, FontStyle.Regular))
+                new List<ImageText>() { new ImageText("The first line of text", new Font(FontFamily.GenericSansSerif, (Single)72.0, FontStyle.Bold)) },
+                new List<ImageText>() { new ImageText("The second line of text", new Font(FontFamily.GenericSansSerif, (Single)72.0, FontStyle.Regular)) },
+                new List<ImageText>() { new ImageText("The third line of text", new Font(FontFamily.GenericSansSerif, (Single)60.0, FontStyle.Regular)) },
+                new List<ImageText>() { new ImageText("The fourth line of text", new Font(FontFamily.GenericSansSerif, (Single)32.0, FontStyle.Regular)) }
             };
 
             ImageDetails details = new ImageDetails(path, Color.White, Color.Black, textPieces);

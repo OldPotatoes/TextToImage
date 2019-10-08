@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace TextToImage
@@ -28,18 +29,12 @@ namespace TextToImage
 
                 using (Brush textBrush = new SolidBrush(details.TextColor))
                 {
-                    foreach (ImageText piece in details.TextPieces)
-                    {
-                        if (piece.Font == null)
-                            throw new Exception("Image text had a no font.");
-
+                    foreach (List<ImageText> lineOfPieces in details.TextPieces)
                         distanceDownThePage = DrawLinesOfText(drawing,
                                                               textBrush,
-                                                              piece.Font,
-                                                              piece.Text,
+                                                              lineOfPieces,
                                                               details.Width,
                                                               distanceDownThePage);
-                    }
                 }
 
                 if (save)
@@ -54,47 +49,91 @@ namespace TextToImage
 
         public Single DrawLinesOfText(Graphics drawing,
                                     Brush textBrush,
-                                    Font font,
-                                    String textoDraw,
+                                    List<ImageText> lineOfTextPieces,
                                     Single width,
                                     Single distanceDownPage)
         {
-            while (textoDraw.Length > 0)
+
+            for (Int32 count = 0; count < lineOfTextPieces.Count; count++)
             {
-                (textoDraw, distanceDownPage) = DrawLineOfText(drawing,
-                                                               textBrush,
-                                                               font,
-                                                               textoDraw,
-                                                               width,
-                                                               distanceDownPage);
+                ImageText it = lineOfTextPieces[count];
+
+                while (it.Text.Length > 0)
+                {
+                    (it.Text, distanceDownPage) = DrawLineFragment(drawing,
+                                                                 textBrush,
+                                                                 it,
+                                                                 width,
+                                                                 0.0f,
+                                                                 distanceDownPage);
+                }
             }
 
             return distanceDownPage;
         }
 
-        public (String, Single) DrawLineOfText(Graphics drawing,
-                                               Brush textBrush,
-                                               Font font,
-                                               String textToDrawFrom,
-                                               Single width,
-                                               Single distanceDownPage)
+        //public (String, Single) DrawLine(Graphics drawing,
+        //                                 Brush textBrush,
+        //                                 List<ImageText> lineOfTextPieces,
+        //                                 Single width,
+        //                                 Single distanceDownPage)
+        //{
+        //    foreach (ImageText text in lineOfTextPieces)
+        //    {
+        //        if (text.Font == null)
+        //            throw new Exception("Image text had a no font.");
+
+        //    }
+
+
+        //    TapeMeasure measure = new TapeMeasure();
+        //    (String textToFitWidth,
+        //     String remainingText,
+        //     Single lineHeight) = measure.FindTextToFitWidth(textPiece.Text, (Int32)width, textPiece.Font);
+
+        //    drawing.DrawString(textToFitWidth, textPiece.Font, textBrush, 0, distanceDownPage);
+
+        //    if (DEBUG)
+        //        Console.WriteLine($"InkPen: Text '{textToFitWidth}' written at {distanceDownPage} pixels down page.");
+
+        //    distanceDownPage += lineHeight;
+
+        //    if (DEBUG)
+        //        Console.WriteLine($"InkPen: Next line should be at '{distanceDownPage}' pixels down page.");
+
+        //    return (remainingText, distanceDownPage);
+        //}
+
+        public (String, Single) DrawLineFragment(Graphics drawing,
+                                                 Brush textBrush,
+                                                 ImageText textPiece,
+                                                 Single pageWidthRemaining,
+                                                 Single xOnPage,
+                                                 Single yOnPage)
         {
-            TapeMeasure measure = new TapeMeasure();
+            if (textPiece.Font == null)
+                throw new Exception("Image text had a no font.");
+
+            if (textPiece.Text.Length == 0)
+                return (String.Empty, yOnPage);
+
             (String textToFitWidth, 
              String remainingText,
-             Single lineHeight) = measure.FindTextToFitWidth(textToDrawFrom, (Int32)width, font);
+             Single lineHeight) = TapeMeasure.FindTextToFitWidth(textPiece.Text,
+                                                                 pageWidthRemaining,
+                                                                 textPiece.Font);
 
-            drawing.DrawString(textToFitWidth, font, textBrush, 0, distanceDownPage);
-
-            if (DEBUG)
-                Console.WriteLine($"InkPen: Text '{textToFitWidth}' written at {distanceDownPage} pixels down page.");
-
-            distanceDownPage += lineHeight;
+            drawing.DrawString(textToFitWidth, textPiece.Font, textBrush, xOnPage, yOnPage);
 
             if (DEBUG)
-                Console.WriteLine($"InkPen: Next line should be at '{distanceDownPage}' pixels down page.");
+                Console.WriteLine($"InkPen: Text '{textToFitWidth}' written at {xOnPage},{yOnPage} pixels.");
 
-            return (remainingText, distanceDownPage);
+            yOnPage += lineHeight;
+
+            if (DEBUG)
+                Console.WriteLine($"InkPen: Next line should be at '{yOnPage}' pixels down page.");
+
+            return (remainingText, yOnPage);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace TextToImage
 {
     public struct ImageText
     {
-        public readonly String Text;
-        public readonly Font Font;
+        public String Text;
+        public Font Font;
 
         public ImageText(String text, Font font=null)
         {
@@ -26,12 +26,12 @@ namespace TextToImage
         public readonly Int32 Width;
         public readonly Color TextColor;
         public readonly Color BackgroundColor;
-        public readonly List<ImageText> TextPieces;
+        public readonly List<List<ImageText>> TextPieces;
 
         public ImageDetails(String path,
                             Color textColor,
                             Color backgroundColor,
-                            List<ImageText> textPieces,
+                            List<List<ImageText>> textPieces,
                             Int32 width = 1920)
         {
             Path = path;

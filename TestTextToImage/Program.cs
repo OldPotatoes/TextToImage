@@ -26,13 +26,13 @@ namespace ExampleTextToImage
             pen.CreateImage(new ImageDetails(path,
                                              Color.AntiqueWhite,
                                              Color.Black,
-                                             new List<ImageText>() {
-                                                 new ImageText(textTitle1, fontTitle),
-                                                 new ImageText(textTitle2, fontTitle),
-                                                 new ImageText(textAuthor, fontAuthor),
-                                                 new ImageText(textChapter, fontChapter),
-                                                 new ImageText(text1, fontText),
-                                                 new ImageText(text2, fontText)
+                                             new List<List<ImageText>>() {
+                                                 new List<ImageText> { new ImageText(textTitle1, fontTitle) },
+                                                 new List<ImageText> { new ImageText(textTitle2, fontTitle) },
+                                                 new List<ImageText> { new ImageText(textAuthor, fontAuthor) },
+                                                 new List<ImageText> { new ImageText(textChapter, fontChapter) },
+                                                 new List<ImageText> { new ImageText(text1, fontText) },
+                                                 new List<ImageText> { new ImageText(text2, fontText) }
                                              }));
         }
     }
