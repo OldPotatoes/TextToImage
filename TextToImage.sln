@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleTextToImage", "TestT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextToImage", "TextToImage\TextToImage.csproj", "{73E17087-1744-4FBF-82E7-E4D54C7E296C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextToImage.Tests", "TextToImage.Tests\TextToImage.Tests.csproj", "{201C017C-5610-46F7-87BA-3A5815097432}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextToImage.Tests", "TextToImage.Tests\TextToImage.Tests.csproj", "{201C017C-5610-46F7-87BA-3A5815097432}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metrics", "Metrics", "{4C3B2C08-0FF9-4170-B10D-B6DBAD819164}"
+	ProjectSection(SolutionItems) = preProject
+		Metrics.bat = Metrics.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

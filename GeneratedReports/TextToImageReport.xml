@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageSession xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="4.7.922.0">
+  <Summary numSequencePoints="0" visitedSequencePoints="0" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="0" maxCyclomaticComplexity="0" minCyclomaticComplexity="0" maxCrapScore="0" minCrapScore="0" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="0" />
+  <Modules>
+    <Module skippedDueTo="Filter" hash="1E-F6-DE-E8-C0-04-7C-EA-52-E9-79-44-39-C5-7C-67-A0-90-CC-4A">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll</ModulePath>
+      <ModuleTime>2019-07-25T23:32:40Z</ModuleTime>
+      <ModuleName>mscorlib</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="7F-6A-25-88-3D-15-D5-C4-F6-7F-44-74-2B-D2-93-18-1A-E9-3C-9F">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\mstest.exe</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>MSTest</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="6A-5E-7E-30-BD-F2-B5-62-2E-5D-AC-14-BF-EB-6A-F9-51-71-F2-ED">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.Common.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.Common</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="4A-9D-81-85-DC-CF-74-ED-91-AC-6F-7B-37-3D-3E-0B-36-5C-56-66">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll</ModulePath>
+      <ModuleTime>2019-07-24T02:58:28Z</ModuleTime>
+      <ModuleName>System</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="3F-6C-A3-10-F9-4E-07-21-6B-57-80-26-95-60-3E-3A-77-A9-6A-F7">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.ExecutionCommon.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.ExecutionCommon</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="EA-5D-C9-E0-74-6A-CA-14-BD-15-03-9F-7E-7B-1B-77-8B-87-D9-A9">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.Resource.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.Resource</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="DF-C9-61-37-67-FC-86-B5-19-6B-51-39-78-82-42-F2-94-44-FD-2F">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Configuration\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll</ModulePath>
+      <ModuleTime>2019-03-19T04:46:46.1168105Z</ModuleTime>
+      <ModuleName>System.Configuration</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="BA-94-4B-50-1E-D5-31-87-F3-25-6E-BA-07-71-E4-9F-22-0D-B8-34">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Xml\v4.0_4.0.0.0__b77a5c561934e089\System.Xml.dll</ModulePath>
+      <ModuleTime>2019-03-19T04:46:51.77351Z</ModuleTime>
+      <ModuleName>System.Xml</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="6C-EB-3B-A1-F0-8E-B0-9B-96-60-DD-90-CB-92-59-24-81-83-36-99">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.CommandLine.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.CommandLine</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="1F-D9-E7-85-2B-87-73-77-31-2E-2A-BC-6F-D4-70-57-70-38-B1-DE">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.TMI.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.TMI</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="8B-56-37-29-55-5E-5E-BC-42-39-79-2C-73-4A-3B-56-E0-00-81-9F">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Core\v4.0_4.0.0.0__b77a5c561934e089\System.Core.dll</ModulePath>
+      <ModuleTime>2019-07-24T02:58:28Z</ModuleTime>
+      <ModuleName>System.Core</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="F5-59-CF-00-CD-38-F1-C9-97-6A-D2-21-1D-81-7B-9E-20-67-21-16">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\System.Data\v4.0_4.0.0.0__b77a5c561934e089\System.Data.dll</ModulePath>
+      <ModuleTime>2019-03-19T04:46:59.2428523Z</ModuleTime>
+      <ModuleName>System.Data</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="95-38-95-FE-36-13-50-C3-4C-7B-E9-A4-69-13-03-A4-C0-D8-7F-CD">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Numerics\v4.0_4.0.0.0__b77a5c561934e089\System.Numerics.dll</ModulePath>
+      <ModuleTime>2019-03-19T04:46:49.1482976Z</ModuleTime>
+      <ModuleName>System.Numerics</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="13-17-D4-91-E5-0F-8F-68-10-26-E6-CE-B6-8D-E0-C5-A2-59-C2-E0">
+      <ModulePath>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Web.dll</ModulePath>
+      <ModuleTime>2019-07-24T02:58:28Z</ModuleTime>
+      <ModuleName>System.Web</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="">
+      <ModulePath>RefEmit_InMemoryManifestModule</ModulePath>
+      <ModuleTime>0001-01-01T00:00:00</ModuleTime>
+      <ModuleName>Microsoft.GeneratedCode</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="9B-32-83-36-25-3C-F0-8D-6B-3C-5D-36-ED-8C-73-75-D6-CA-04-1A">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Tip.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Tip</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="50-49-EC-9A-A8-EB-2C-F8-A1-DC-DC-7A-37-6F-EE-E2-44-7D-FF-79">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="69-04-0E-FB-3B-78-EB-28-FE-D7-6A-A8-C8-1B-95-6B-A1-8C-C6-BC">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.UnitTestFramework</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="B8-E1-B2-D6-EF-8F-46-45-B0-6A-86-62-A9-0D-56-E3-EB-1D-E0-A1">
+      <ModulePath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.QualityTools.Tips.UnitTest.AssemblyResolver.dll</ModulePath>
+      <ModuleTime>2019-09-12T01:24:56.1901427Z</ModuleTime>
+      <ModuleName>Microsoft.VisualStudio.QualityTools.Tips.UnitTest.AssemblyResolver</ModuleName>
+      <Classes />
+    </Module>
+    <Module skippedDueTo="Filter" hash="F4-C7-EE-B5-C4-54-77-AB-DF-66-86-91-71-A0-31-0E-F1-79-58-23">
+      <ModulePath>D:\Code\Git\TextToImage\TextToImage.Tests\bin\Debug\netcoreapp2.2\TextToImage.Tests.dll</ModulePath>
+      <ModuleTime>2019-10-05T04:47:21.5395652Z</ModuleTime>
+      <ModuleName>TextToImage.Tests</ModuleName>
+      <Classes />
+    </Module>
+  </Modules>
+</CoverageSession>
