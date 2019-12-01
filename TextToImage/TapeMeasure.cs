@@ -7,7 +7,7 @@ namespace TextToImage
     {
         private const Boolean DEBUG = true;
 
-        public static (String, String, Single) FindTextToFitWidth(String text, Single pageWidth, Font font)
+        public static (String lineText, String remainderText, SizeF lineSize) FindTextToFitWidth(String text, Single pageWidth, Single pageWidthRemaining, Font font)
         {
             String remainderText = String.Empty;
             Int32 bestWidthInCharacters = 0;
@@ -15,7 +15,7 @@ namespace TextToImage
             Boolean pastEndOfLine = false;
             Boolean textAllMeasured = false;
 
-            SizeF textSize;
+            SizeF textSize = new SizeF();
             while (!pastEndOfLine && !textAllMeasured)
             {
                 wordEndingIndex = FindNextWordEnding(text, wordEndingIndex);
@@ -23,7 +23,7 @@ namespace TextToImage
                 String lineOfText = text.Substring(0, wordEndingIndex);
                 textSize = MeasureText(lineOfText, font);
 
-                if (textSize.Width > pageWidth)
+                if (textSize.Width > pageWidthRemaining)
                     pastEndOfLine = true; // No more room on the line
                 else
                     bestWidthInCharacters = lineOfText.Length; // Added a word to the line to be drawn
@@ -34,11 +34,20 @@ namespace TextToImage
                     wordEndingIndex++; // Step past the white space
             }
 
-            String textInLine;
+            String textInLine = String.Empty;
             if (bestWidthInCharacters == 0)
             {
-                // A single word is longer than the maximum line
-                (textInLine, remainderText) = FindWordFragmentToFitWidth(text, pageWidth, font);
+                if (pageWidth != pageWidthRemaining)
+                {
+                    // Try moving down a line and filling whole new line
+                    remainderText = text;
+                    return (textInLine, remainderText, new SizeF());
+                }
+                else
+                {
+                    // A single word is longer than the maximum line
+                    (textInLine, remainderText) = FindWordFragmentToFitWidth(text, pageWidth, font);
+                }
             }
             else
             {
@@ -48,9 +57,9 @@ namespace TextToImage
             }
 
             if (DEBUG)
-                Console.WriteLine($"TapeMeasure: In text '{text}' on a page {pageWidth} wide, the line is {textInLine} (its height is {textSize.Height}).");
+                Console.WriteLine($"TapeMeasure: In text '{text}' on a page with {pageWidthRemaining} width remaining, the line is {textInLine} (its height is {textSize.Height}).");
 
-            return (textInLine, remainderText, textSize.Height);
+            return (textInLine, remainderText, textSize);
         }
 
         public static (String, String) FindWordFragmentToFitWidth(String word, Single pageWidth, Font font)
