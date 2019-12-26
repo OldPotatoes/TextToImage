@@ -23,7 +23,7 @@ namespace TextToImage.Tests
             String startingText = "In that egg there was a bird, A rare bird and a rattlin' bird";
             var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
             var textPiece = new ImageText(startingText, font);
-            Single startingDistanceDownPage = 100.0f;
+            Single startingDistanceDownPage = 0.0f;
             Single pageWidth = 500.0f;
             SizeF placeOnPage;
 
@@ -36,7 +36,7 @@ namespace TextToImage.Tests
                 {
                     var pen = new InkPen();
                     String endingText;
-                    (endingText, placeOnPage) = pen.DrawLineFragment(drawing, textBrush, textPiece, pageWidth, 0.0f, startingDistanceDownPage);
+                    (endingText, placeOnPage) = pen.DrawLineFragment(drawing, textBrush, textPiece, pageWidth, pageWidth);
                 }
             }
 
@@ -55,7 +55,7 @@ namespace TextToImage.Tests
             String startingText = "";
             String endingText = "";
             Single startingDistanceDownPage = 100.0f;
-            Single endingDistanceDownPage = 100.0f;
+            Single endingDistanceDownPage = 0.0f;
             Single pageWidth = 100.0f;
             var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
             var textPiece = new ImageText(startingText, font);
@@ -69,7 +69,7 @@ namespace TextToImage.Tests
                 using (Brush textBrush = new SolidBrush(Color.White))
                 {
                     var pen = new InkPen();
-                    (endingText, placeOnPage) = pen.DrawLineFragment(drawing, textBrush, textPiece, pageWidth, 0.0f, startingDistanceDownPage);
+                    (endingText, placeOnPage) = pen.DrawLineFragment(drawing, textBrush, textPiece, pageWidth, pageWidth);
                 }
             }
 
@@ -84,7 +84,7 @@ namespace TextToImage.Tests
             var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
             var textPiece = new ImageText(text, font);
             var listTextPieces = new List<ImageText>() { textPiece };
-            Single startingDistanceDownPage = 100.0f;
+            Single startingDistanceDownPage = 0.0f;
             Single endingDistanceDownPage = 0.0f;
             Single pageWidth = 500.0f;
 
@@ -96,7 +96,9 @@ namespace TextToImage.Tests
                 using (Brush textBrush = new SolidBrush(Color.White))
                 {
                     var pen = new InkPen();
-                    endingDistanceDownPage = pen.DrawLineOfText(drawing, textBrush, listTextPieces, pageWidth, startingDistanceDownPage);
+                    //endingDistanceDownPage = pen.DrawLineOfText(drawing, textBrush, listTextPieces, pageWidth, startingDistanceDownPage);
+                    pen.DrawLineOfText(drawing, textBrush, listTextPieces, pageWidth);
+                    endingDistanceDownPage = pen.AbsolutePagePosition.Height;
                 }
             }
 
@@ -111,7 +113,7 @@ namespace TextToImage.Tests
             var font = new Font(FontFamily.GenericSerif, (Single)100.0, FontStyle.Bold);
             var textPiece1 = new ImageText(String.Empty, font);
             var listTextPieces = new List<ImageText>() { textPiece1, textPiece1 };
-            Single startingDistanceDownPage = 100.0f;
+            Single startingDistanceDownPage = 0.0f;
             Single endingDistanceDownPage = 0.0f;
             Single pageWidth = 500.0f;
 
@@ -123,7 +125,9 @@ namespace TextToImage.Tests
                 using (Brush textBrush = new SolidBrush(Color.White))
                 {
                     var pen = new InkPen();
-                    endingDistanceDownPage = pen.DrawLineOfText(drawing, textBrush, listTextPieces, pageWidth, startingDistanceDownPage);
+                    //endingDistanceDownPage = pen.DrawLineOfText(drawing, textBrush, listTextPieces, pageWidth, startingDistanceDownPage);
+                    pen.DrawLineOfText(drawing, textBrush, listTextPieces, pageWidth);
+                    endingDistanceDownPage = pen.AbsolutePagePosition.Height;
                 }
             }
 
