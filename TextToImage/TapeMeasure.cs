@@ -3,97 +3,128 @@ using System.Drawing;
 
 namespace TextToImage
 {
-    public class TapeMeasure
+    public sealed class TapeMeasure
     {
         private const Boolean DEBUG = true;
+        private IGraphics _graphicsWrapper;
 
-        public static (String lineText, String remainderText, SizeF lineSize) FindTextToFitWidth(String text, Single pageWidth, Single pageWidthRemaining, Font font)
+        public TapeMeasure() : this(GraphicsWrapper.Instance)
         {
-            String remainderText = String.Empty;
-            Int32 bestWidthInCharacters = 0;
-            Int32 wordEndingIndex = 0;
-            Boolean pastEndOfLine = false;
-            Boolean textAllMeasured = false;
-
-            SizeF textSize = new SizeF();
-            while (!pastEndOfLine && !textAllMeasured)
-            {
-                wordEndingIndex = FindNextWordEnding(text, wordEndingIndex);
-
-                String lineOfText = text.Substring(0, wordEndingIndex);
-                textSize = MeasureText(lineOfText, font);
-
-                if (textSize.Width > pageWidthRemaining)
-                    pastEndOfLine = true; // No more room on the line
-                else
-                    bestWidthInCharacters = lineOfText.Length; // Added a word to the line to be drawn
-
-                if (wordEndingIndex == text.Length)
-                    textAllMeasured = true; // At the end of the text
-                else
-                    wordEndingIndex++; // Step past the white space
-            }
-
-            String textInLine = String.Empty;
-            if (bestWidthInCharacters == 0)
-            {
-                if (pageWidth != pageWidthRemaining)
-                {
-                    // Try moving down a line and filling whole new line
-                    remainderText = text;
-                    return (textInLine, remainderText, new SizeF());
-                }
-                else
-                {
-                    // A single word is longer than the maximum line
-                    (textInLine, remainderText) = FindWordFragmentToFitWidth(text, pageWidth, font);
-                }
-            }
-            else
-            {
-                textInLine = text.Substring(0, bestWidthInCharacters);
-                if (bestWidthInCharacters < text.Length)
-                    remainderText = text.Substring(bestWidthInCharacters + 1);
-            }
-
-            if (DEBUG)
-                Console.WriteLine($"TapeMeasure: In text '{text}' on a page with {pageWidthRemaining} width remaining, the line is {textInLine} (its height is {textSize.Height}).");
-
-            return (textInLine, remainderText, textSize);
         }
 
-        public static (String, String) FindWordFragmentToFitWidth(String word, Single pageWidth, Font font)
+        public TapeMeasure(IGraphics graphicsWrapper)
         {
-            Boolean FragmentFits = false;
-            String wordFragment = word;
-            String fragmentWithHyphen = String.Empty;
-            String remainderText = String.Empty;
+            _graphicsWrapper = graphicsWrapper;
+        }
 
-            while (!FragmentFits)
+        ~TapeMeasure()
+        {
+            _graphicsWrapper.Cleanup();
+        }
+
+        public SectionToBeDrawn DefineTextToBeDrawn(SizeF pageSize, SizeF startingLocation, String text, Font font)
+        {
+            var section = new SectionToBeDrawn();
+            if (text.Length == 0)
+                return section;
+
+            Int32 whiteSpaceIndex = 0;
+            String textRemaining = text;
+            SizeF cursorLocation = startingLocation;
+
+            while (textRemaining.Length > 0)
             {
-                wordFragment = wordFragment.Substring(0, wordFragment.Length-1);
-                fragmentWithHyphen = wordFragment + "-";
-                SizeF textSize = MeasureText(fragmentWithHyphen, font);
+                Boolean addEndOfLine = false;
+                Boolean reachedEndOfLine = false;
+                Int32 previousWhiteSpaceIndex = 0;
+                SizeF blockSize = new SizeF();
+                String blockText = String.Empty;
 
-                if (textSize.Width < pageWidth)
+                text = text.Remove(0, whiteSpaceIndex).TrimStart();
+                whiteSpaceIndex = 0;
+
+                while ((textRemaining.Length > 0) && (!reachedEndOfLine))
                 {
-                    FragmentFits = true;
-                    remainderText = word.Substring(wordFragment.Length);
+                    whiteSpaceIndex = FindNextWordEnding(text, whiteSpaceIndex + 1);
+                    blockText = text.Substring(0, whiteSpaceIndex);
+
+                    // If text contains pilcrow:
+                    if (blockText.Contains('¶'))
+                    {
+                        // Treat it as white space
+                        whiteSpaceIndex = text.IndexOf('¶');
+                        blockText = text.Substring(0, whiteSpaceIndex);
+
+                        // Remove it from the text string
+                        text = text.Remove(whiteSpaceIndex, 1);
+
+                        // Add white space to end of the line
+                        addEndOfLine = true;
+                    }
+
+                    textRemaining = text.Substring(whiteSpaceIndex);
+                    blockSize = MeasureText(blockText, font);
+
+                    // Line passes right margin. Remove last word added
+                    if (cursorLocation.Width + blockSize.Width > pageSize.Width)
+                    {
+                        reachedEndOfLine = true;
+                        whiteSpaceIndex = previousWhiteSpaceIndex;
+                        blockText = text.Substring(0, whiteSpaceIndex);
+                        textRemaining = text.Substring(whiteSpaceIndex);
+
+                        if (blockText.Length > 0)
+                            blockSize = MeasureText(blockText, font);
+                        else
+                        {
+                            blockSize.Width = pageSize.Width - cursorLocation.Width + 1;
+                        }
+                    }
+
+                    if (addEndOfLine)
+                    {
+                        reachedEndOfLine = true;
+                        blockSize.Width = pageSize.Width;
+                    }
+
+                    previousWhiteSpaceIndex = whiteSpaceIndex;
+                }
+
+                var block = new TextToBeDrawn
+                {
+                    Text = blockText,
+                    Font = font,
+                    LeftEdge = cursorLocation.Width,
+                    TopEdge = cursorLocation.Height,
+                    Width = blockSize.Width,
+                    Height = blockSize.Height
+                };
+
+                section.SectionParts.Add(block);
+
+                cursorLocation.Width += blockSize.Width;
+
+                if (cursorLocation.Width >= pageSize.Width)
+                {
+                    cursorLocation.Width = 0;
+                    cursorLocation.Height += blockSize.Height;
                 }
             }
 
-            return (fragmentWithHyphen, remainderText);
+            return section;
         }
 
-        public static SizeF MeasureText(String text, Font font)
+        public SizeF MeasureText(String text, Font font)
         {
+            // If string is empty, give it some height.
+            if (text == String.Empty)
+                text = "I";
+
             SizeF textSize;
             using (Image dummyImage = new Bitmap(1, 1))
             {
-                using (Graphics drawing = Graphics.FromImage(dummyImage))
-                {
-                    textSize = drawing.MeasureString(text, font);
-                }
+                _graphicsWrapper.CreateDrawingSurface(dummyImage, Color.White, Color.Black);
+                textSize = _graphicsWrapper.MeasureString(text, font);
             }
 
             if (DEBUG)
