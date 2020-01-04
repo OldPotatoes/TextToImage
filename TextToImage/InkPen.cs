@@ -66,20 +66,10 @@ namespace TextToImage
                 CursorY = 0;
                 using (Brush textBrush = new SolidBrush(details.TextColor))
                 {
-                    //using (Brush yellowBrush = new SolidBrush(Color.Bisque))
-                    //{
-                        //Int32 lineCount = 0;
-                        // Each lineOfPieces is one line on the page in the design
-                        // (though it can spill into multiple lines if the page width requires it
-                        foreach (List<ImageText> lineOfPieces in details.TextPieces)
-                        {
-                            //    Brush brushToUse = yellowBrush;
-                            //    if (++lineCount == 7)
-                            //        brushToUse = textBrush;
-
-                            DrawListOfImageText(drawing, textBrush, lineOfPieces);
-                        }
-                    //}
+                    foreach (List<ImageText> lineOfPieces in details.TextPieces)
+                    {
+                        DrawListOfImageText(drawing, textBrush, lineOfPieces);
+                    }
                 }
 
                 if (save)
