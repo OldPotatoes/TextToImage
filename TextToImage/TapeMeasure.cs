@@ -34,7 +34,6 @@ namespace TextToImage
 
             while (textRemaining.Length > 0)
             {
-                Boolean addEndOfLine = false;
                 Boolean reachedEndOfLine = false;
                 Int32 previousWhiteSpaceIndex = 0;
                 SizeF blockSize = new SizeF();
@@ -47,20 +46,6 @@ namespace TextToImage
                 {
                     whiteSpaceIndex = FindNextWordEnding(text, whiteSpaceIndex + 1);
                     blockText = text.Substring(0, whiteSpaceIndex);
-
-                    // If text contains pilcrow:
-                    if (blockText.Contains('¶'))
-                    {
-                        // Treat it as white space
-                        whiteSpaceIndex = text.IndexOf('¶');
-                        blockText = text.Substring(0, whiteSpaceIndex);
-
-                        // Remove it from the text string
-                        text = text.Remove(whiteSpaceIndex, 1);
-
-                        // Add white space to end of the line
-                        addEndOfLine = true;
-                    }
 
                     textRemaining = text.Substring(whiteSpaceIndex);
                     blockSize = MeasureText(blockText, font);
@@ -80,9 +65,16 @@ namespace TextToImage
                             blockSize.Width = pageSize.Width - cursorLocation.Width + 1;
                         }
                     }
-
-                    if (addEndOfLine)
+                    // If text contains pilcrow:
+                    else if (blockText.Contains('¶'))
                     {
+                        // Treat it as white space
+                        whiteSpaceIndex = text.IndexOf('¶');
+                        blockText = text.Substring(0, whiteSpaceIndex);
+
+                        // Remove it from the text string
+                        text = text.Remove(whiteSpaceIndex, 1);
+
                         reachedEndOfLine = true;
                         blockSize.Width = pageSize.Width;
                     }
