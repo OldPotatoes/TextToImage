@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -9,17 +10,46 @@ namespace TextToImage
         private const Boolean DEBUG = true;
         private const Int32 MAX_HEIGHT = 20000;
 
-        public void CreateImage(ImageDetails details)
+        private Int32 _lineNumber;
+        private Int32 _pageWidth;
+        private Int32 _pageHeight;
+        //private SizeF _absolutePagePosition;
+        private Single _lineLeft;
+        private Single _lineTop;
+        private Single _lineRight;
+        private Single _lineBottom;
+
+        public Int32 LineNumber { get { return _lineNumber; } }
+        public Int32 PageWidth { get { return _pageWidth; } }
+        public Int32 PageHeight { get { return _pageHeight; } }
+        //public SizeF AbsolutePagePosition { get { return _absolutePagePosition; } }
+        public Single LineLeft { get { return _lineLeft; } }
+        public Single LineTop { get { return _lineTop; } }
+        public Single LineRight { get { return _lineRight; } }
+        public Single LineBottom { get { return _lineBottom; } }
+        public Single PageWidthRemaining { get { return PageWidth - LineRight; } }
+        public Single CursorX { get; set; }
+        public Single CursorY { get; set; }
+
+        public InkPen()
         {
-            Int32 pageHeight = (Int32)WriteToImage(MAX_HEIGHT, details, false);
-            WriteToImage(pageHeight, details, true);
         }
 
-        public Single WriteToImage(Int32 imageHeight,
-                                   ImageDetails details,
-                                   Boolean save = false)
+        public InkPen(Int32 pageWidth, Int32 pageHeight)
         {
-            Single distanceDownThePage = 0.0f;
+            _pageWidth = pageWidth;
+            _pageHeight = pageHeight;
+        }
+
+        public void CreateImage(ImageDetails details)
+        {
+            WriteToImage(MAX_HEIGHT, details, false);
+            WriteToImage((Int32)_lineTop, details, true);
+        }
+
+        public void WriteToImage(Int32 imageHeight, ImageDetails details, Boolean save = false)
+        {
+            // details is a whole page to be converted into an image
             Image image = new Bitmap(details.Width, imageHeight);
 
             using (Graphics drawing = Graphics.FromImage(image))
@@ -27,14 +57,29 @@ namespace TextToImage
                 drawing.Clear(details.BackgroundColor);
                 drawing.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
+                _lineLeft = 0;
+                _lineRight = 0;
+                _lineTop = 0;
+                _lineBottom = 0;
+
+                CursorX = 0;
+                CursorY = 0;
                 using (Brush textBrush = new SolidBrush(details.TextColor))
                 {
-                    foreach (List<ImageText> lineOfPieces in details.TextPieces)
-                        distanceDownThePage = DrawLinesOfText(drawing,
-                                                              textBrush,
-                                                              lineOfPieces,
-                                                              details.Width,
-                                                              distanceDownThePage);
+                    //using (Brush yellowBrush = new SolidBrush(Color.Bisque))
+                    //{
+                        //Int32 lineCount = 0;
+                        // Each lineOfPieces is one line on the page in the design
+                        // (though it can spill into multiple lines if the page width requires it
+                        foreach (List<ImageText> lineOfPieces in details.TextPieces)
+                        {
+                            //    Brush brushToUse = yellowBrush;
+                            //    if (++lineCount == 7)
+                            //        brushToUse = textBrush;
+
+                            DrawListOfImageText(drawing, textBrush, lineOfPieces);
+                        }
+                    //}
                 }
 
                 if (save)
@@ -43,97 +88,51 @@ namespace TextToImage
 
             if (save)
                 image.Save(details.Path);
-
-            return distanceDownThePage;
         }
 
-        public Single DrawLinesOfText(Graphics drawing,
-                                    Brush textBrush,
-                                    List<ImageText> lineOfTextPieces,
-                                    Single width,
-                                    Single distanceDownPage)
+        public void DrawListOfImageText(Graphics drawing,
+                                        Brush textBrush,
+                                        List<ImageText> lineOfTextPieces)
         {
-
+            // Each lineOfTextPieces is one line on the page in the design
+            // (though it can spill into multiple lines if the page width requires it
+            Single lineHeight = 0f;
+            Single bottomEdge = 0f;
+            var measure = new TapeMeasure();
             for (Int32 count = 0; count < lineOfTextPieces.Count; count++)
             {
+                // Each imageText is one chunk of one line, though depending on line length
+                // it may be broken into multiple parts within a section
                 ImageText it = lineOfTextPieces[count];
 
-                while (it.Text.Length > 0)
+                SectionToBeDrawn section = measure.DefineTextToBeDrawn(new SizeF(_pageWidth, _pageHeight),
+                                                                       new SizeF(_lineLeft, _lineTop),
+                                                                       it.Text,
+                                                                       it.Font);
+                foreach (TextToBeDrawn textBlock in section.SectionParts)
                 {
-                    (it.Text, distanceDownPage) = DrawLineFragment(drawing,
-                                                                 textBrush,
-                                                                 it,
-                                                                 width,
-                                                                 0.0f,
-                                                                 distanceDownPage);
+                    if (_lineLeft > _pageWidth)
+                    {
+                        _lineLeft = 0;
+                        _lineTop += bottomEdge;
+                    }
+                    drawing.DrawString(textBlock.Text, textBlock.Font, textBrush, textBlock.LeftEdge, textBlock.TopEdge);
+                    lineHeight = (lineHeight < textBlock.Height) ? textBlock.Height : lineHeight;
+                    bottomEdge = (bottomEdge < textBlock.TopEdge + lineHeight) ? textBlock.TopEdge + lineHeight : bottomEdge;
+                    _lineLeft = textBlock.LeftEdge + textBlock.Width;
+                    _lineTop = textBlock.TopEdge;
                 }
             }
-
-            return distanceDownPage;
+            _lineLeft = 0;
+            _lineTop = bottomEdge;
         }
 
-        //public (String, Single) DrawLine(Graphics drawing,
-        //                                 Brush textBrush,
-        //                                 List<ImageText> lineOfTextPieces,
-        //                                 Single width,
-        //                                 Single distanceDownPage)
-        //{
-        //    foreach (ImageText text in lineOfTextPieces)
-        //    {
-        //        if (text.Font == null)
-        //            throw new Exception("Image text had a no font.");
-
-        //    }
-
-
-        //    TapeMeasure measure = new TapeMeasure();
-        //    (String textToFitWidth,
-        //     String remainingText,
-        //     Single lineHeight) = measure.FindTextToFitWidth(textPiece.Text, (Int32)width, textPiece.Font);
-
-        //    drawing.DrawString(textToFitWidth, textPiece.Font, textBrush, 0, distanceDownPage);
-
-        //    if (DEBUG)
-        //        Console.WriteLine($"InkPen: Text '{textToFitWidth}' written at {distanceDownPage} pixels down page.");
-
-        //    distanceDownPage += lineHeight;
-
-        //    if (DEBUG)
-        //        Console.WriteLine($"InkPen: Next line should be at '{distanceDownPage}' pixels down page.");
-
-        //    return (remainingText, distanceDownPage);
-        //}
-
-        public (String, Single) DrawLineFragment(Graphics drawing,
-                                                 Brush textBrush,
-                                                 ImageText textPiece,
-                                                 Single pageWidthRemaining,
-                                                 Single xOnPage,
-                                                 Single yOnPage)
+        public void DrawSection(Graphics drawingSurface, Brush brush, SectionToBeDrawn section)
         {
-            if (textPiece.Font == null)
-                throw new Exception("Image text had a no font.");
-
-            if (textPiece.Text.Length == 0)
-                return (String.Empty, yOnPage);
-
-            (String textToFitWidth, 
-             String remainingText,
-             Single lineHeight) = TapeMeasure.FindTextToFitWidth(textPiece.Text,
-                                                                 pageWidthRemaining,
-                                                                 textPiece.Font);
-
-            drawing.DrawString(textToFitWidth, textPiece.Font, textBrush, xOnPage, yOnPage);
-
-            if (DEBUG)
-                Console.WriteLine($"InkPen: Text '{textToFitWidth}' written at {xOnPage},{yOnPage} pixels.");
-
-            yOnPage += lineHeight;
-
-            if (DEBUG)
-                Console.WriteLine($"InkPen: Next line should be at '{yOnPage}' pixels down page.");
-
-            return (remainingText, yOnPage);
+            foreach (TextToBeDrawn part in section.SectionParts)
+            {
+                drawingSurface.DrawString(part.Text, part.Font, brush, LineRight, LineTop);
+            }
         }
     }
 }
