@@ -145,12 +145,9 @@ namespace TextToImage
                 Int32 locationIndex = 0;
                 while (locationIndex >= 0)
                 {
-                    if (text.Length > locationIndex + 1)
-                    {
-                        locationIndex = text.IndexOf('*', locationIndex + 1);
-                        if (locationIndex >= 0)
-                            asterisks.Add(locationIndex);
-                    }
+                    locationIndex = text.IndexOf('*', locationIndex + 1);
+                    if (locationIndex >= 0)
+                        asterisks.Add(locationIndex);
                 }
 
                 if (asterisks.Count % 2 == 1)
