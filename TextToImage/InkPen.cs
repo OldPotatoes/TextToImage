@@ -95,22 +95,32 @@ namespace TextToImage
                 // it may be broken into multiple parts within a section
                 ImageText it = lineOfTextPieces[count];
 
-                SectionToBeDrawn section = measure.DefineTextToBeDrawn(new SizeF(_pageWidth, _pageHeight),
-                                                                       new SizeF(_lineLeft, _lineTop),
-                                                                       it.Text,
-                                                                       it.Font);
-                foreach (TextToBeDrawn textBlock in section.SectionParts)
+                // Split text where italics are found
+                List<(String, Boolean)> textPieces = SplitTextWithItalics(it.Text);
+                foreach ((String, Boolean) textPiece in textPieces)
                 {
-                    if (_lineLeft > _pageWidth)
+                    SectionToBeDrawn section = measure.DefineTextToBeDrawn(new SizeF(_pageWidth, _pageHeight),
+                                                                           new SizeF(_lineLeft, _lineTop),
+                                                                           textPiece.Item1,
+                                                                           it.Font);
+                    foreach (TextToBeDrawn textBlock in section.SectionParts)
                     {
-                        _lineLeft = 0;
-                        _lineTop += bottomEdge;
+                        if (_lineLeft > _pageWidth)
+                        {
+                            _lineLeft = 0;
+                            _lineTop += bottomEdge;
+                        }
+
+                        Font fontToUse = textBlock.Font;
+                        if (textPiece.Item2)
+                            fontToUse = new Font(textBlock.Font.FontFamily, textBlock.Font.Size, FontStyle.Italic);
+
+                        drawing.DrawString(textBlock.Text, fontToUse, textBrush, textBlock.LeftEdge, textBlock.TopEdge);
+                        lineHeight = (lineHeight < textBlock.Height) ? textBlock.Height : lineHeight;
+                        bottomEdge = (bottomEdge < textBlock.TopEdge + lineHeight) ? textBlock.TopEdge + lineHeight : bottomEdge;
+                        _lineLeft = textBlock.LeftEdge + textBlock.Width;
+                        _lineTop = textBlock.TopEdge;
                     }
-                    drawing.DrawString(textBlock.Text, textBlock.Font, textBrush, textBlock.LeftEdge, textBlock.TopEdge);
-                    lineHeight = (lineHeight < textBlock.Height) ? textBlock.Height : lineHeight;
-                    bottomEdge = (bottomEdge < textBlock.TopEdge + lineHeight) ? textBlock.TopEdge + lineHeight : bottomEdge;
-                    _lineLeft = textBlock.LeftEdge + textBlock.Width;
-                    _lineTop = textBlock.TopEdge;
                 }
             }
             _lineLeft = 0;
@@ -123,6 +133,48 @@ namespace TextToImage
             {
                 drawingSurface.DrawString(part.Text, part.Font, brush, LineRight, LineTop);
             }
+        }
+
+        public List<(String, Boolean)> SplitTextWithItalics(String text)
+        {
+            List<(String, Boolean)> textPieces = new List<(String, Boolean)>();
+
+            var asterisks = new List<Int32>();
+            if (text.Contains('*'))
+            {
+                Int32 locationIndex = 0;
+                while (locationIndex >= 0)
+                {
+                    if (text.Length > locationIndex + 1)
+                    {
+                        locationIndex = text.IndexOf('*', locationIndex + 1);
+                        if (locationIndex >= 0)
+                            asterisks.Add(locationIndex);
+                    }
+                }
+
+                if (asterisks.Count % 2 == 1)
+                    throw new Exception("Odd number of asterisks in a piece of text.");
+
+                Int32 startIndex = 0;
+                Int32 endIndex = 0;
+                Int32 textLength = 0;
+                Boolean isItalics = false;
+                foreach (Int32 asteriskIndex in asterisks)
+                {
+                    endIndex = asteriskIndex;
+                    textLength = endIndex - startIndex;
+                    startIndex = (startIndex == 0) ? startIndex : startIndex + 1;
+                    textPieces.Add((text.Substring(startIndex, endIndex - startIndex), isItalics));
+                    startIndex = asteriskIndex;
+                    isItalics = !isItalics;
+                }
+                textPieces.Add((text.Substring(startIndex + 1), isItalics));
+            }
+            else
+                textPieces.Add((text, false));
+
+            return textPieces;
         }
     }
 }
