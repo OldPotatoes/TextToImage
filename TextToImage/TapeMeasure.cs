@@ -6,7 +6,7 @@ namespace TextToImage
     public sealed class TapeMeasure
     {
         private const Boolean DEBUG = true;
-        private IGraphics _graphicsWrapper;
+        private readonly IGraphics _graphicsWrapper;
 
         public TapeMeasure() : this(GraphicsWrapper.Instance)
         {

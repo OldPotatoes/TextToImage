@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -7,27 +6,14 @@ namespace TextToImage
 {
     public class InkPen
     {
-        private const Boolean DEBUG = true;
         private const Int32 MAX_HEIGHT = 20000;
-
-        private Int32 _lineNumber;
-        private Int32 _pageWidth;
-        private Int32 _pageHeight;
-        //private SizeF _absolutePagePosition;
+        private readonly Int32 _pageHeight;
         private Single _lineLeft;
-        private Single _lineTop;
-        private Single _lineRight;
-        private Single _lineBottom;
 
-        public Int32 LineNumber { get { return _lineNumber; } }
-        public Int32 PageWidth { get { return _pageWidth; } }
-        public Int32 PageHeight { get { return _pageHeight; } }
-        //public SizeF AbsolutePagePosition { get { return _absolutePagePosition; } }
-        public Single LineLeft { get { return _lineLeft; } }
-        public Single LineTop { get { return _lineTop; } }
-        public Single LineRight { get { return _lineRight; } }
-        public Single LineBottom { get { return _lineBottom; } }
-        public Single PageWidthRemaining { get { return PageWidth - LineRight; } }
+        public Int32 PageWidth { get; }
+        public Single LineTop { get; private set; }
+        public Single LineRight { get; private set; }
+        public Single LineBottom { get; private set; }
         public Single CursorX { get; set; }
         public Single CursorY { get; set; }
 
@@ -37,14 +23,14 @@ namespace TextToImage
 
         public InkPen(Int32 pageWidth, Int32 pageHeight)
         {
-            _pageWidth = pageWidth;
+            PageWidth = pageWidth;
             _pageHeight = pageHeight;
         }
 
         public void CreateImage(ImageDetails details)
         {
             WriteToImage(MAX_HEIGHT, details, false);
-            WriteToImage((Int32)_lineTop, details, true);
+            WriteToImage((Int32)LineTop, details, true);
         }
 
         public void WriteToImage(Int32 imageHeight, ImageDetails details, Boolean save = false)
@@ -58,9 +44,9 @@ namespace TextToImage
                 drawing.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
                 _lineLeft = 0;
-                _lineRight = 0;
-                _lineTop = 0;
-                _lineBottom = 0;
+                LineRight = 0;
+                LineTop = 0;
+                LineBottom = 0;
 
                 CursorX = 0;
                 CursorY = 0;
@@ -99,16 +85,16 @@ namespace TextToImage
                 List<(String, Boolean)> textPieces = SplitTextWithItalics(it.Text);
                 foreach ((String, Boolean) textPiece in textPieces)
                 {
-                    SectionToBeDrawn section = measure.DefineTextToBeDrawn(new SizeF(_pageWidth, _pageHeight),
-                                                                           new SizeF(_lineLeft, _lineTop),
+                    SectionToBeDrawn section = measure.DefineTextToBeDrawn(new SizeF(PageWidth, _pageHeight),
+                                                                           new SizeF(_lineLeft, LineTop),
                                                                            textPiece.Item1,
                                                                            it.Font);
                     foreach (TextToBeDrawn textBlock in section.SectionParts)
                     {
-                        if (_lineLeft > _pageWidth)
+                        if (_lineLeft > PageWidth)
                         {
                             _lineLeft = 0;
-                            _lineTop += bottomEdge;
+                            LineTop += bottomEdge;
                         }
 
                         Font fontToUse = textBlock.Font;
@@ -119,12 +105,12 @@ namespace TextToImage
                         lineHeight = (lineHeight < textBlock.Height) ? textBlock.Height : lineHeight;
                         bottomEdge = (bottomEdge < textBlock.TopEdge + lineHeight) ? textBlock.TopEdge + lineHeight : bottomEdge;
                         _lineLeft = textBlock.LeftEdge + textBlock.Width;
-                        _lineTop = textBlock.TopEdge;
+                        LineTop = textBlock.TopEdge;
                     }
                 }
             }
             _lineLeft = 0;
-            _lineTop = bottomEdge;
+            LineTop = bottomEdge;
         }
 
         public void DrawSection(Graphics drawingSurface, Brush brush, SectionToBeDrawn section)
@@ -154,13 +140,11 @@ namespace TextToImage
                     throw new Exception("Odd number of asterisks in a piece of text.");
 
                 Int32 startIndex = 0;
-                Int32 endIndex = 0;
-                Int32 textLength = 0;
                 Boolean isItalics = false;
                 foreach (Int32 asteriskIndex in asterisks)
                 {
-                    endIndex = asteriskIndex;
-                    textLength = endIndex - startIndex;
+                    Int32 endIndex = asteriskIndex;
+                    Int32 textLength = endIndex - startIndex;
                     startIndex = (startIndex == 0) ? startIndex : startIndex + 1;
                     textPieces.Add((text.Substring(startIndex, endIndex - startIndex), isItalics));
                     startIndex = asteriskIndex;
