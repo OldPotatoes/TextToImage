@@ -62,7 +62,8 @@ namespace TextToImage
                             blockSize = MeasureText(blockText, font);
                         else
                         {
-                            blockSize.Width = pageSize.Width - cursorLocation.Width + 1;
+                            //blockSize.Width = pageSize.Width - cursorLocation.Width + 1;
+                            blockSize.Width = pageSize.Width - cursorLocation.Width;
                         }
                     }
                     // If text contains pilcrow:
